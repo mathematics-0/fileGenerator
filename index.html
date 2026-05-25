@@ -1,0 +1,235 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1117;--panel:#161b24;--surface:#1e2535;--surface2:#252d40;
+  --border:#2a3347;--text:#dde4f0;--muted:#5e6e90;
+  --accent:#00d4a8;--accent-bg:rgba(0,212,168,.1);--accent-bd:rgba(0,212,168,.3);
+  --orange:#ff7844;--green:#3dd68c;--red:#ff5f5f;
+}
+.root{background:var(--bg);color:var(--text);font-family:-apple-system,'Helvetica Neue','Hiragino Sans','Yu Gothic',sans-serif;font-size:14px;line-height:1.5;min-height:100vh;padding-bottom:2rem}
+.hdr{background:var(--panel);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:8px;margin-bottom:0}
+.hdr-title{font-size:13px;font-weight:700;color:var(--accent);letter-spacing:.07em;flex:1}
+.body{padding:14px}
+.section{margin-bottom:14px}
+.lbl{display:block;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+input[type=text],input[type=number],select,textarea{
+  width:100%;background:var(--surface);border:1px solid var(--border);border-radius:6px;
+  color:var(--text);font-family:inherit;font-size:13px;padding:7px 10px;
+  outline:none;transition:border-color .15s}
+input[type=text]:focus,input[type=number]:focus,select:focus,textarea:focus{border-color:var(--accent-bd)}
+select{cursor:pointer}
+select option{background:#1e2535}
+textarea{resize:vertical;min-height:80px;line-height:1.6;font-family:monospace;font-size:12px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.seg{display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.seg button{flex:1;background:var(--surface2);border:none;border-right:1px solid var(--border);
+  padding:7px 4px;font-size:12px;cursor:pointer;color:var(--muted);
+  font-family:inherit;transition:all .15s}
+.seg button:last-child{border-right:none}
+.seg button.active{background:var(--accent-bg);color:var(--accent);border-color:var(--accent-bd)}
+.seg button:hover:not(.active){color:var(--text)}
+.err{font-size:11px;color:var(--red);margin-top:3px;min-height:14px}
+.custom-univ{display:none;margin-top:6px}
+.img-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.img-row input[type=checkbox]{width:14px;height:14px;cursor:pointer;accent-color:var(--accent)}
+.img-row span{font-size:12px;color:var(--muted)}
+.img-hint{font-size:10px;color:var(--muted);margin-top:3px;font-family:monospace}
+#img-wrap{display:none}
+.gen-btn{width:100%;padding:9px;background:var(--surface2);border:1px solid var(--border);
+  border-radius:6px;color:var(--text);font-family:inherit;font-size:13px;font-weight:600;
+  cursor:pointer;transition:all .15s;margin-top:4px;letter-spacing:.03em}
+.gen-btn:hover{border-color:var(--accent-bd);color:var(--accent);background:var(--accent-bg)}
+.gen-btn:active{transform:scale(.98)}
+.divider{border:none;border-top:1px solid var(--border);margin:14px 0}
+.out-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.out-dot{width:5px;height:5px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 4px rgba(61,214,140,.6);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.out-area{background:var(--panel);border:1px solid var(--border);border-radius:6px;
+  padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:11.5px;
+  white-space:pre-wrap;word-break:break-all;color:var(--text);
+  min-height:50px;max-height:260px;overflow-y:auto;line-height:1.7}
+.copy-btn{margin-top:8px;padding:7px 16px;background:var(--orange);color:#fff;
+  border:none;border-radius:6px;cursor:pointer;font-family:inherit;font-size:13px;
+  font-weight:600;transition:all .15s}
+.copy-btn:hover{filter:brightness(1.12)}
+.copy-btn:active{transform:scale(.97)}
+.copy-btn.ok{background:var(--green)}
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+</style>
+
+<div class="root">
+<div class="hdr">
+  <div class="hdr-title">∑ 問題データ ジェネレータ</div>
+</div>
+
+<div class="body">
+
+<div class="section row2">
+  <div>
+    <label class="lbl">ID</label>
+    <input type="number" id="f-id" placeholder="例: 16" min="1">
+  </div>
+  <div>
+    <label class="lbl">年度</label>
+    <input type="text" id="f-year" placeholder="例: 2024" maxlength="4">
+    <div class="err" id="year-err"></div>
+  </div>
+</div>
+
+<div class="section row2">
+  <div>
+    <label class="lbl">ジャンル</label>
+    <select id="f-genre">
+      <option value="">選択</option>
+      <option>数と式</option>
+      <option>二次関数</option>
+      <option>三角関数</option>
+      <option>指数関数・対数関数</option>
+      <option>微分法</option>
+      <option>積分法</option>
+      <option>数列</option>
+      <option>極限</option>
+      <option>ベクトル</option>
+      <option>平面上の曲線と複素数平面</option>
+      <option>図形と方程式</option>
+      <option>場合の数と確率</option>
+      <option>統計的な推測</option>
+      <option>データの分析</option>
+      <option>数学と人間の活動</option>
+    </select>
+  </div>
+  <div>
+    <label class="lbl">難易度 1〜10</label>
+    <input type="number" id="f-diff" min="1" max="10" placeholder="例: 5">
+  </div>
+</div>
+
+<div class="section row2">
+  <div>
+    <label class="lbl">大学</label>
+    <select id="f-univ" onchange="toggleCustomUniv(this.value)">
+      <option value="">選択</option>
+      <option value="東大">東大</option>
+      <option value="京大">京大</option>
+      <option value="阪大">阪大</option>
+      <option value="北大">北大</option>
+      <option value="東北大">東北大</option>
+      <option value="名大">名大</option>
+      <option value="九大">九大</option>
+      <option value="東科大">東科大</option>
+      <option value="一橋">一橋</option>
+      <option value="__custom__">その他…</option>
+    </select>
+    <input type="text" id="f-univ-custom" class="custom-univ" placeholder="大学名を入力">
+  </div>
+  <div>
+    <label class="lbl">試験期</label>
+    <div class="seg" id="seg-term" style="margin-top:1px">
+      <button class="active" onclick="setActive('term',this,'前期')">前期</button>
+      <button onclick="setActive('term',this,'後期')">後期</button>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <label class="lbl">区分</label>
+  <div class="seg" id="seg-type">
+    <button class="active" onclick="setActive('type',this,'理系')">理系</button>
+    <button onclick="setActive('type',this,'文系')">文系</button>
+    <button onclick="setActive('type',this,'共通')">共通</button>
+  </div>
+</div>
+
+<div class="section">
+  <label class="lbl">問題文</label>
+  <textarea id="f-problem" placeholder="問題文を入力… LaTeX: $...$ / $$...$$"></textarea>
+</div>
+
+<div class="section">
+  <label class="lbl">解説文 <span style="color:var(--muted);text-transform:none;font-size:10px;letter-spacing:0">（任意）</span></label>
+  <textarea id="f-solution" placeholder="解説文を入力…（省略可）" style="min-height:65px"></textarea>
+</div>
+
+<div class="section">
+  <label class="lbl">画像</label>
+  <div class="img-row">
+    <input type="checkbox" id="img-check" onchange="toggleImg(this.checked)">
+    <span>画像を挿入する</span>
+  </div>
+  <div id="img-wrap">
+    <input type="text" id="f-img" placeholder="problems/images/0001.png">
+    <div class="img-hint">← ファイルを該当パスに配置してください</div>
+  </div>
+</div>
+
+<button class="gen-btn" onclick="generate()">▶ スニペットを生成</button>
+
+<div id="output-wrap" style="display:none">
+  <div class="divider"></div>
+  <div class="out-label"><span class="out-dot"></span>生成されたコード</div>
+  <div class="out-area" id="output"></div>
+  <button class="copy-btn" id="copy-btn" onclick="copyCode()">コピー</button>
+</div>
+
+</div>
+</div>
+
+<script>
+const sel={type:'理系',term:'前期'};
+function setActive(key,btn,val){
+  sel[key]=val;
+  btn.closest('.seg').querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function toggleCustomUniv(v){
+  document.getElementById('f-univ-custom').style.display=v==='__custom__'?'block':'none';
+}
+function toggleImg(on){
+  document.getElementById('img-wrap').style.display=on?'block':'none';
+}
+function escStr(s){return s.replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\${/g,'\\${');}
+function generate(){
+  const id=document.getElementById('f-id').value.trim();
+  const yearRaw=document.getElementById('f-year').value.trim();
+  const diff=document.getElementById('f-diff').value.trim();
+  const genre=document.getElementById('f-genre').value;
+  let univ=document.getElementById('f-univ').value;
+  if(univ==='__custom__') univ=document.getElementById('f-univ-custom').value.trim();
+  const problem=document.getElementById('f-problem').value.trim();
+  const solution=document.getElementById('f-solution').value.trim();
+  const imgOn=document.getElementById('img-check').checked;
+  const imgPath=document.getElementById('f-img').value.trim();
+  const yearErr=document.getElementById('year-err');
+  if(yearRaw&&!/^\d{4}$/.test(yearRaw)){yearErr.textContent='無効な入力です（西暦4桁）';return;}
+  yearErr.textContent='';
+  let lines=['  {'];
+  if(id) lines.push(`    id: ${parseInt(id)},`);
+  if(genre) lines.push(`    genre: "${genre}",`);
+  if(diff) lines.push(`    difficulty: ${parseInt(diff)},`);
+  if(sel.type) lines.push(`    type: "${sel.type}",`);
+  if(univ) lines.push(`    university: "${univ}",`);
+  if(yearRaw) lines.push(`    year: ${parseInt(yearRaw)},`);
+  if(sel.term) lines.push(`    term: "${sel.term}",`);
+  if(problem) lines.push(`    problem: \`${escStr(problem)}\`,`);
+  if(solution) lines.push(`    solution: \`${escStr(solution)}\`,`);
+  if(imgOn&&imgPath) lines.push(`    image: "${imgPath}",`);
+  lines.push('  },');
+  document.getElementById('output').textContent=lines.join('\n');
+  document.getElementById('output-wrap').style.display='block';
+  document.getElementById('copy-btn').className='copy-btn';
+  document.getElementById('copy-btn').textContent='コピー';
+}
+function copyCode(){
+  navigator.clipboard.writeText(document.getElementById('output').textContent).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.classList.add('ok');
+    btn.textContent='✓ コピー済み';
+    setTimeout(()=>{btn.className='copy-btn';btn.textContent='コピー';},1800);
+  });
+}
+</script>
